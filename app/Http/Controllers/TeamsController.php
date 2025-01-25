@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Repositories\Teams\TeamsRepository;
 use Exception;
+
+use App\Repositories\Teams\TeamsRepository;
 
 class TeamsController extends Controller
 {
