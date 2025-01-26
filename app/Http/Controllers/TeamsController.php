@@ -46,8 +46,6 @@ class TeamsController extends Controller
         }
     }
 
-
-
     public function storeTeam(Request $request)
     {
         try {

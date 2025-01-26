@@ -18,6 +18,26 @@ class TeamsRepository{
         return Teams::all();
     }
 
+    public function getTeamsActive(){
+        return Teams::where('eliminated', 0)->get();
+    }
+
+    public function resetScore(){
+        Teams::query()->update([
+            'score' => 0,
+            'eliminated' => 0,
+        ]);
+    }
+
+    public function updateScore($teams){
+        foreach($teams as $team){
+            $teamUpdate = Teams::find($team['id']);
+            $teamUpdate->score += $team['balance'];
+            $teamUpdate->eliminated = $team['eliminated'];
+            $teamUpdate->save();  
+        }
+    }
+
     public function storeTeam($data){
 
         DB::beginTransaction();
