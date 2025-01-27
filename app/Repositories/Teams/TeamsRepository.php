@@ -20,7 +20,7 @@ class TeamsRepository{
 
     public function getTeamsActive(){
         return Teams::where('eliminated', 0)->get();
-    }
+    }    
 
     public function resetScore(){
         Teams::query()->update([

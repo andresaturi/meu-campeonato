@@ -21,16 +21,18 @@ class MatchesController extends Controller
         $validated = $request->validate([
             'championship_id' => 'required|integer',
         ]);
-    
+   
         try {              
             
             $result = $this->matchesService->playMatches($validated['championship_id']);    
-            
-            return response()->json([
-                'success' => true,
-                'message' => 'Partidas processadas com sucesso.',              
-                'result' => $result,
-            ], Response::HTTP_OK);
+           
+            if($result){
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Partidas processadas com sucesso.',              
+                    'result' => $result,
+                ], Response::HTTP_OK);
+            }
         } catch (\Exception $e) {           
             return response()->json([
                 'success' => false,

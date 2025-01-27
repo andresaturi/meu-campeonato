@@ -24,7 +24,18 @@ class MatchesRepository{
 
     public function getAllMatches(){
         return Matches::all();
-    }      
+    }  
+
+    public function getTeamsthird(){
+        return Matches::where('stage_id', 2)->get();
+    }
+
+    public function resetMatches($championship_id){
+        $matches = Matches::where('championship_id', $championship_id)->get();
+        foreach ($matches as $match) {
+            $match->delete(); 
+        }
+    }
 
     public function storeMatche($teams, $championship){
 

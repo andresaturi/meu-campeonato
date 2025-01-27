@@ -25,23 +25,24 @@ class MatcheService
         $this->teamsRepository = $teamsRepository;
         $this->matchesRepository = $matchesRepository;
         $this->championshipsRepository = $championshipsRepository;
-        $this->championship;
+        $this->championship;        
     }
 
-    public function playMatches(int $championship_id){
+    public function playMatches($championship_id){
        
         $championship = $this->championshipsRepository->getChampionshipById($championship_id);   
-        
+       
         if (!$championship) {
-            throw new \Exception('Campeonato não encontrado', Response::HTTP_NOT_FOUND);
-        }    
+            throw new \Exception('Campeonato no encontrado', Response::HTTP_NOT_FOUND);
+        }     
       
         $teams = $this->teamsRepository->getAllTeams();
         if (count($teams) !== 8) {
             throw new \Exception('O campeonato requer 8 times para iniciar', Response::HTTP_BAD_REQUEST);
         }    
         $this->championship = $championship;
-        $this->teamsRepository->resetScore();    
+        $this->matchesRepository->resetMatches($championship->id);
+        $this->teamsRepository->resetScore();   
        
         return $this->play(); 
     }
@@ -49,38 +50,39 @@ class MatcheService
 
     public function play(){
 
-        $activeTeams = $this->teamsRepository->getTeamsActive()->toArray();
-        $countTeams = count($activeTeams);
-
-        if ($countTeams === 1) {
-            return $activeTeams;
+        while(true){
+            $activeTeams = $this->teamsRepository->getTeamsActive()->toArray();
+            $countTeams = count($activeTeams);
+            
+            if ($countTeams === 1) {
+                $this->thirdPlace();
+                return true;                
+            }     
+            
+            $this->setStage($countTeams);
+            
+            shuffle($activeTeams);           
+            $games = $this->createGames($activeTeams);
+            $this->processGames($games);           
         }
-        
-        $this->setStage($countTeams);
-       
-        shuffle($activeTeams);
-        $games = $this->createGames($activeTeams);
-        return $this->processGames($games);
     }
 
     protected function processGames(array $games){
 
-        foreach ($games as $game) {
+        foreach ($games as $game) {         
             $process = new Process(['python3', base_path('teste.py'), json_encode($game)]);
-            $process->run();
-
+            $process->run();            
             if (!$process->isSuccessful()) {
                 throw new RuntimeException($process->getErrorOutput());
             }
-
-            $result = json_decode($process->getOutput(), true);          
+            
+            $result = json_decode($process->getOutput(), true);
             if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new RuntimeException('Erro no script Python');
-            }
+                throw new RuntimeException('Erro ao processar JSON: ' . json_last_error_msg());
+            }            
 
             $this->setWinner($result);
-        }
-        $this->play();
+        }        
     }
 
     protected function createGames(array $teams): array{
@@ -126,8 +128,11 @@ class MatcheService
         return $teams;
     }
 
-    protected function setStage($countTeams){
-        if($countTeams == 8){
+    protected function setStage($countTeams, $third = null){
+        if($third){
+            $this->championship->stage = 4;
+        }
+        elseif($countTeams == 8){
             $this->championship->stage = 1;
         }
         elseif($countTeams == 4){
@@ -136,5 +141,19 @@ class MatcheService
         elseif($countTeams == 2){
             $this->championship->stage = 3;        
         }
+    }
+
+    protected function thirdPlace(){
+        $eliminatedTeams = $this->matchesRepository->getTeamsthird();
+        $teams = [];
+        foreach($eliminatedTeams as $eliminatedTeam){  
+            $teamId = $eliminatedTeam->home_team_id == $eliminatedTeam->winner_id 
+                ? $eliminatedTeam->away_team_id : $eliminatedTeam->home_team_id;
+            $teams[] = $this->teamsRepository->getTeamById($teamId);
+        }
+        shuffle($teams);           
+        $games = $this->createGames($teams);
+        $this->setStage(0, true);
+        $this->processGames($games);           
     }
 }
