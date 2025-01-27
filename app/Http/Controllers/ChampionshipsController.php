@@ -17,24 +17,14 @@ class ChampionshipsController extends Controller
         $this->championshipsRepository = $championshipsRepository;
     }
 
-    public function getChampionshipById($id){
-        try {
-            $championship = $this->championshipsRepository->getChampionshipById($id);
-            return $championship
-            ? response()->json(['championship' => $championship], Response::HTTP_OK)
-            : response()->json(['error' => 'Campeonato não encontrado'], Response::HTTP_NOT_FOUND);
-        
-        } catch (Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    public function getChampionships(){
+    public function getChampionships($id = null){
 
         try {
-            $championships = $this->championshipsRepository->getAllChampionships();
+            if($id){
+                $championships = $this->championshipsRepository->getChampionshipById($id);
+            }else{
+                $championships = $this->championshipsRepository->getAllChampionships();
+            }
             return $championships
             ? response()->json(['championships' => $championships], Response::HTTP_OK)
             : response()->json(['error' => 'Nenhum campeonato encontrado'], Response::HTTP_NOT_FOUND);

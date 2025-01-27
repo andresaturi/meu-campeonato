@@ -17,24 +17,14 @@ class TeamsController extends Controller
         $this->teamsRepository = $teamsRepository;
     }
 
-    public function getTeamById($id){
-        try {
-            $team = $this->teamsRepository->getTeamById($id);
-            return $team
-            ? response()->json(['team' => $team], Response::HTTP_OK)
-            : response()->json(['error' => 'Time não encontrado'], Response::HTTP_NOT_FOUND);
-        
-        } catch (Exception $e) {
-            return response()->json([
-                'error' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    public function getTeams(){
+    public function getTeams($id = null){
 
         try {
-            $teams = $this->teamsRepository->getAllTeams();
+            if($id){
+                $teams = $this->teamsRepository->getTeamById($id);
+            }else{
+                $teams = $this->teamsRepository->getAllTeams();
+            }
             return $teams
             ? response()->json(['teams' => $teams], Response::HTTP_OK)
             : response()->json(['error' => 'nenhum time encontrado'], Response::HTTP_NOT_FOUND);
