@@ -191,7 +191,7 @@ class MatcheService
                             'score' => $team->score
                         ];
                     } else {
-                        $team = $this->teamsRepository->getTeamById($result->away_team_id);
+                        $team = $this->teamsRepository->getTeamById($result->home_team_id);
                         $ranking['2°'] = [
                             'team' => $team->name,
                             'score' => $team->score
