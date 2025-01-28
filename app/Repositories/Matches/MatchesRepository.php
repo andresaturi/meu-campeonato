@@ -26,8 +26,9 @@ class MatchesRepository{
         return Matches::all();
     }  
 
-    public function getTeamsthird(){
-        return Matches::where('stage_id', 2)->get();
+    public function getTeamsthird($championship_id){
+        return Matches::where('stage_id', 2)
+        ->where('championship_id', $championship_id)->get();
     }
 
     public function resetMatches($championship_id){

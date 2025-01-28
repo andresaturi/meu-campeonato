@@ -144,7 +144,7 @@ class MatcheService
     }
 
     protected function thirdPlace(){
-        $eliminatedTeams = $this->matchesRepository->getTeamsthird();
+        $eliminatedTeams = $this->matchesRepository->getTeamsthird($this->championship->id);
         $teams = [];
         foreach($eliminatedTeams as $eliminatedTeam){  
             $teamId = $eliminatedTeam->home_team_id == $eliminatedTeam->winner_id 
