@@ -17,7 +17,7 @@ class MatchesRepository{
 
     public function getMatcheByChampionship($championship_id){
         if($championship_id){
-            return Matches::where('championship_id', $championship_id)->get;
+            return Matches::where('championship_id', $championship_id)->get();
         }
         return Matches::all();  
     }
