@@ -156,4 +156,53 @@ class MatcheService
         $this->setStage(0, true);
         $this->processGames($games);           
     }
+
+    public function ranking($championship_id){
+
+        $results = $this->matchesRepository->getMatcheByChampionship($championship_id);
+        $ranking = [];
+    
+        foreach ($results as $result) {         
+        
+            if ($result->stage_id == 4) {                
+                if (!isset($ranking['3°'])) {
+                    $team = $this->teamsRepository->getTeamById($result->winner_id);
+                    $ranking['3°'] = [
+                        'team' => $team->name,
+                        'score' => $team->score 
+                    ];
+                }
+            }            
+           
+            elseif ($result->stage_id == 3) {               
+                if (!isset($ranking['1°'])) {
+                    $team = $this->teamsRepository->getTeamById($result->winner_id);
+                    $ranking['1°'] = [
+                        'team' => $team->name,
+                        'score' => $team->score 
+                    ];
+                }    
+                
+                if (!isset($ranking['2°'])) {
+                    if ($result->winner_id == $result->home_team_id) {
+                        $team = $this->teamsRepository->getTeamById($result->winner_id);
+                        $ranking['2°'] = [
+                            'team' => $team->name,
+                            'score' => $team->score
+                        ];
+                    } else {
+                        $team = $this->teamsRepository->getTeamById($result->away_team_id);
+                        $ranking['2°'] = [
+                            'team' => $team->name,
+                            'score' => $team->score
+                        ];
+                    }
+                }
+            }
+        }
+    
+        return $ranking;
+    }
+    
+
 }

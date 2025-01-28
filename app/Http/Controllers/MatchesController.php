@@ -44,10 +44,25 @@ class MatchesController extends Controller
     
      
     public function getMatches($championship_id = null){
+
         try{
-            
             $matches = $this->matchesRepository->getMatcheByChampionship($championship_id);
             return response()->json($matches,  Response::HTTP_OK);
+
+        }catch (\Exception $e) {           
+            return response()->json([
+                'success' => false,
+                'message' => 'Ocorreu um erro ao resgatar as partidas.',
+                'error' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function getResults($championship_id){
+
+        try{
+            $results = $this->matchesService->ranking($championship_id);
+            return response()->json($results,  Response::HTTP_OK);
 
         }catch (\Exception $e) {           
             return response()->json([

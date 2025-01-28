@@ -14,4 +14,6 @@ Route::post('/store-championship', [ChampionshipsController::class, 'storeChampi
 Route::put('/update-championship', [ChampionshipsController::class, 'storeChampionship']);
 
 Route::get('/matches/{id?}', [MatchesController::class, 'getMatches']);
-Route::get('/play-matches', [MatchesController::class, 'playMatches']);
+Route::get('/results/{id}', [MatchesController::class, 'getResults']);
+Route::post('/play-matches', [MatchesController::class, 'playMatches']);
+

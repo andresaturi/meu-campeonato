@@ -20,4 +20,9 @@ class Matches extends Model
         'winner_id',
         'match_date',
     ];
+
+    public function team()
+    {
+        return $this->belongsTo(Teams::class, 'team_id');
+    }
 }
