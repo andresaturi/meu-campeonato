@@ -17,6 +17,9 @@ class TeamsController extends Controller
         $this->teamsRepository = $teamsRepository;
     }
 
+    /**
+    * Team List
+    */   
     public function getTeams($id = null){
 
         try {
@@ -36,6 +39,9 @@ class TeamsController extends Controller
         }
     }
 
+    /**
+     * Store team
+     */
     public function storeTeam(Request $request)
     {
         try {

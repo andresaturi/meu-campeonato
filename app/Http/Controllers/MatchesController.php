@@ -16,6 +16,9 @@ class MatchesController extends Controller
         $this->matchesRepository = $matchesRepository;
     }
 
+    /**
+     * Play Matches
+     */
     public function playMatches(Request $request){
        
         $validated = $request->validate([
@@ -41,7 +44,9 @@ class MatchesController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-    
+    /**
+     * Get Matches
+     */
      
     public function getMatches($championship_id = null){
 
@@ -58,6 +63,9 @@ class MatchesController extends Controller
         }
     }
 
+    /**
+     * Get Results
+     */
     public function getResults($championship_id){
 
         try{

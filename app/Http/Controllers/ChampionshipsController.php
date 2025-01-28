@@ -17,6 +17,9 @@ class ChampionshipsController extends Controller
         $this->championshipsRepository = $championshipsRepository;
     }
 
+    /**
+     * Get Championship
+     */
     public function getChampionships($id = null){
 
         try {
@@ -37,7 +40,9 @@ class ChampionshipsController extends Controller
     }
 
 
-
+    /**
+     * Store Championship
+     */
     public function storeChampionship(Request $request)
     {
         try {

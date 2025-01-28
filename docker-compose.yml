@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   laravel.test:
     build:
@@ -28,11 +26,8 @@ services:
 
   mysql:
     image: mysql:8.0
-    environment:
-      MYSQL_ROOT_PASSWORD: '+Melatonina10'  # Senha do root
-      MYSQL_DATABASE: campeonato
     ports:
-      - "3308:3306"  # Alterado a porta do MySQL para 3308 na máquina local
+      - "3308:3306"
     networks:
       - sail
     volumes:
